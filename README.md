@@ -1,8 +1,8 @@
 use the following commands to execute
 
-yacc -d parser.y
+yacc -d parse.y
 
-lex lexer.l
+lex tok1.l
 
 gcc y.tab.c lex.yy.c -ll -ly
 
