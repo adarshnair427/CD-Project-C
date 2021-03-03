@@ -1,6 +1,6 @@
-# CD-Project-Pascal
+use the following commands to execute
 
-I used
-"lex tok1.l
-bison -d parse.y
-gcc lex.cc.yy parse.tab.h"
+yacc -d parser.y
+lex lexer.l
+gcc y.tab.c lex.yy.c -ll -ly
+./a.out <file.text
