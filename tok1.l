@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "parse.tab.h"
 %}
 alpha [A-Za-z]
 digit [0-9]
