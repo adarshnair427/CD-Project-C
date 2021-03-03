@@ -1,27 +1,21 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "parse.tab.h"
+#include "y.tab.h"
+void yyerror(char* s);
 %}
 alpha [A-Za-z]
 digit [0-9]
 %%
-
-
-begin  {return BEGIN;}
-end    {return END;}
-"end."                return ENDDOT; //end.   
-
-
+"begin"            return T_BEGIN;
+"end"              return END;
+"end."             return ENDDOT; //end.   
 ";"                return SEMICOLON;
 ","	           return COMMA;
-"program"          {return PGRM;}
+"program"          return PGRM;
 "to"               return TO;
-
-
 "//".* ;           //comment section
-"("(.|\n)"*)"  ;  //comment section
-
+"(*"(.|\n)*"*)"  ;  //comment section
 var   {return VAR;}//var
 do    {return DO;}//do
 integer	{return INT;}//int
@@ -31,7 +25,6 @@ for       {return FOR;}//for
 {alpha}({alpha}|{digit})*   { 
 				yylval=strdup(yytext);
 				return ID;}//Identifier
-
 ":="   {return AO;} //assignment operatorr				
 "<="   {return LE;}//relational
 ">="     {return GE;}//relational
