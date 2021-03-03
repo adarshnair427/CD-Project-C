@@ -1,0 +1,15 @@
+program whileLoop;
+var
+   a,b: integer;
+
+begin
+   a := 10;
+   b:=0;
+   while  a < 20  do
+   
+   begin
+      writeln('value of a: ', a);
+       writeln('value of b: ', b);
+      a := a + 1;
+   end;
+end.
