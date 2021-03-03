@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #define YYSTYPE char*
 int yylex();
+void yyerror(char* s);
+
 %}
 
-%token ID NUM LE GE EQ NE OR AND DO WHILE INT PGRM FOR BEGIN END ENDDOT VAR TO PRGM SEMICOLON COMMA AO
+%token ID NUM LE GE EQ NE OR AND DO WHILE INT PGRM FOR T_BEGIN END ENDDOT VAR TO PRGM SEMICOLON COMMA AO
 %right '='
 %left AND OR
 %left '<' '>' LE GE EQ NE
@@ -18,17 +20,16 @@ int yylex();
 
 start : PGRM ID SEMICOLON STATE;
 
-STATE : |BEGIN
-	|ENDOT
+STATE : |T_BEGIN
+	|ENDDOT
 	|END
 	|WHILE CH DO STATE
         |Exp SEMICOLON STATE
-	|BEGIN STATE END SEMICOLON      
+	|T_BEGIN STATE END SEMICOLON      
 	|VAR Exp X
-        |FOR Exp TO NUM DO BEGIN STATE END SEMICOLON STATE
+        |FOR Exp TO NUM DO T_BEGIN STATE END SEMICOLON STATE
 	;
         
-
 
 X     : COMMA X
        | SEMICOLON STATE
@@ -66,9 +67,9 @@ CH  : Exp'<'Exp
 
 %%
 
-#include "lex.yy.c"
-int yywrap(){
- return 1;}
+void yyerror(char* s){
+printf("%s \n", s);
+}
 int main()
 {
 	
@@ -78,3 +79,4 @@ if(!yyparse()){
 		printf("\nParsing failed\n");}
 return 0;
 }
+  
