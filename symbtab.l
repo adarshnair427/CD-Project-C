@@ -1,12 +1,13 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "y.tab.h"
+void yyerror(char* s);
 %}
 alpha [A-Za-z]
 digit [0-9]
 %%
-
-begin  {return BEGIN;}
+begin  {return T_BEGIN;}
 end    {return END;}
 "end."                return ENDDOT; //end.   
 ";"                return SEMICOLON;
