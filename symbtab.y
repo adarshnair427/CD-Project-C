@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define YYSTYPE char*
+void yyerror(char* s);
 int yylex();
 int ok=1;
 int scope=0;
@@ -97,7 +98,7 @@ if(t==2){
 
 
 %}
-%token ID NUM LE GE EQ NE OR AND DO WHILE INT PGRM FOR BEGIN END ENDDOT VAR TO PRGM SEMICOLON COLON COMMA AO
+%token ID NUM LE GE EQ NE OR AND DO WHILE INT PGRM FOR T_BEGIN END ENDDOT VAR TO PRGM SEMICOLON COLON COMMA AO
 %right '='
 %left AND OR
 %left '<' '>' LE GE EQ NE
@@ -107,27 +108,15 @@ if(t==2){
 %left '!'
 %%
 
-start : PGRM ID SEMICOLON BEGIN STATE ENDDOT;
-
-//start:INCLUDE STREAM USING NAME_S STD SEMICOLON INT MAIN '{' STATE RET  ZERO SEMICOLON'}';
+start : PGRM ID SEMICOLON T_BEGIN STATE ENDDOT;
 
 
 STATE : |WHILE Exp DO { line_store[scope]=line } STATE {scope--;line++;}STATE
         |Exp SEMICOLON STATE
+	|T_BEGIN STATE END
         |VAR{c_r=1;} Exp{insert(SYMBOL_TABLE,scope,line_store,len,0,yylval,0);len++;now=0;} X
-        |FOR {c_r=1;} Exp{insert(SYMBOL_TABLE,scope,line_store,len,0,yylval,0);len++;now=0;} TO NUM DO {line_store[scope]=line;scope++;line++;} BEGIN STATE END SEMICOLON {scope--;line++;}STATE;
+        |FOR {c_r=1;} Exp{insert(SYMBOL_TABLE,scope,line_store,len,0,yylval,0);len++;now=0;} TO NUM DO {line_store[scope]=line;scope++;line++;} T_BEGIN STATE END SEMICOLON {scope--;line++;}STATE;
         
-
-
-
-//STATE  :|DO '{' {line_store[scope]=line;scope++;line++;}STATE  '}' WHILE'(' CH ')' SEMICOLON {scope--;line++;}STATE
-//	|Exp SEMICOLON STATE
-//	| INT{c_r=1;} Exp{insert(SYMBOL_TABLE,scope,line_store,len,0,yylval,0);len++;now=0;} X
-//	|FLOAT{c_r=1;} Exp{insert(SYMBOL_TABLE,scope,line_store,len,1,yylval,0);len++;now=1;} X
-//	| DOUBLE{c_r=1;} {insert(SYMBOL_TABLE,scope,line_store,len,2,yylval,0);len++;now=2;}Exp X
-//	|IF '(' CH ')' '{' {line_store[scope]=line;scope++;line++;}STATE '}'{scope--;line++;} Y
-//	;
-
 
 
 X:COMMA{c_r=1;} Exp{insert(SYMBOL_TABLE,scope,line_store,len,now,yylval,0);len++;} X
@@ -157,6 +146,9 @@ Exp   : ID{if(c_r==0 && !check(SYMBOL_TABLE,scope,line_store,len,yylval,1)){prin
 #include "lex.yy.c"
 int yywrap(){
  return 1;}
+void yyerror(char* s){
+printf("%s \n", s);
+}
 int main()
 {	
    line_store=malloc(sizeof(int)*100);
