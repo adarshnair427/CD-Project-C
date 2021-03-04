@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-void yyerror(char* s);
+int yyerror(char* s);
 %}
 alpha [A-Za-z]
 digit [0-9]
@@ -23,7 +23,7 @@ while    {return WHILE;}//while
 {digit}+    {return NUM;}//digit 
 for       {return FOR;}//for
 {alpha}({alpha}|{digit})*   { 
-				yylval=strdup(yytext);
+				yylval=strdup(yytext);// returns the current lexeme to token
 				return ID;}//Identifier
 ":="   {return AO;} //assignment operatorr				
 "<="   {return LE;}//relational
