@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define YYSTYPE char*
-void yyerror(char* s);
+int yyerror(char* s);
 int yylex();
 int ok=1;
 int scope=0;
@@ -111,7 +111,7 @@ if(t==2){
 start : PGRM ID SEMICOLON T_BEGIN STATE ENDDOT;
 
 
-STATE : |WHILE Exp DO { line_store[scope]=line } STATE {scope--;line++;}STATE
+STATE : |WHILE Exp DO { line_store[scope]=line;scope++;line++; } STATE {scope--;line++;}STATE
         |Exp SEMICOLON STATE
 	|T_BEGIN STATE END
         |VAR{c_r=1;} Exp{insert(SYMBOL_TABLE,scope,line_store,len,0,yylval,0);len++;now=0;} X
@@ -121,6 +121,7 @@ STATE : |WHILE Exp DO { line_store[scope]=line } STATE {scope--;line++;}STATE
 
 X:COMMA{c_r=1;} Exp{insert(SYMBOL_TABLE,scope,line_store,len,now,yylval,0);len++;} X
       | SEMICOLON{c_r=0;} STATE
+      |COLON Exp;
 	;
 
 Exp   : ID{if(c_r==0 && !check(SYMBOL_TABLE,scope,line_store,len,yylval,1)){printf("Identifier un-declared\n");exit(0);}c_r=0;} AO Exp
@@ -143,10 +144,9 @@ Exp   : ID{if(c_r==0 && !check(SYMBOL_TABLE,scope,line_store,len,yylval,1)){prin
 
 %%
 
-#include "lex.yy.c"
 int yywrap(){
  return 1;}
-void yyerror(char* s){
+int yyerror(char* s){
 printf("%s \n", s);
 }
 int main()
