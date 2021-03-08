@@ -18,21 +18,22 @@ int yylex();
 start : PGRM ID SEMICOLON T_BEGIN STATE ENDDOT;
 
 
-STATE : |WHILE Exp DO STATE STATE
-        |Exp SEMICOLON STATE
-	|T_BEGIN STATE END
+STATE : |T_BEGIN STATE END
         |VAR X
-        |FOR TO NUM DO T_BEGIN STATE END SEMICOLON STATE;
+	|Exp SEMICOLON STATE
+        |FOR TO NUM DO T_BEGIN STATE END SEMICOLON STATE
+        |WHILE Exp DO STATE 
+	;
         
 
-
-X:    |COMMA Exp X
-      | SEMICOLON STATE
-      |Exp COLON INT SEMICOLON
-	;
+X:    |Exp ':' INT SEMICOLON STATE
+      |Exp','X
+      |SEMICOLON STATE
+      ;
 	
 
 Exp   : ID AO Exp
+      | Exp'='Exp
       | Exp'+'Exp
       | Exp'-'Exp
       | Exp'*'Exp
@@ -60,7 +61,7 @@ printf("%s \n", s);
 int main()
 {	
    if(!yyparse()){
-		printf("\nParsing complete\n");}
+		printf("\nParsing complete, no syntax error\n");}
 	else{
 
 		printf("\nParsing failed\n");}
